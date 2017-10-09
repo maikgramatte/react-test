@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { Icon, Popup } from 'semantic-ui-react'
 
 export default class ViewModeSwitcher extends Component {
 
@@ -12,16 +13,20 @@ export default class ViewModeSwitcher extends Component {
         const currentValue = this.props.viewmode
 
         return (
-            <div className="columns">
-                <dl className="sub-nav">
-                    <dd className= { currentValue === 'default' ?  'active' : 'not-active' } onClick={ () => callback('default') }>
-                        <a>Grid</a>
-                    </dd>
-                    <dd className= { currentValue === 'list' ?  'active' : 'not-active' } onClick={ () => callback('list') }>
-                        <a>List</a>
-                    </dd>
-                </dl>
-            </div>
+            <menu className="grid-view-switcher text-center">
+                <span className= { currentValue === 'default' ?  'active' : 'not-active' } onClick={ () => callback('default') }>
+                    <Popup
+                        trigger={<Icon name='grid layout' size='big' />}
+                        content='Grid View'
+                    />
+                </span>
+                <span className= { currentValue === 'list' ?  'active' : 'not-active' } onClick={ () => callback('list') }>
+                    <Popup
+                        trigger={<Icon name='list layout' size='big' />}
+                        content='Table View'
+                    />
+                </span>
+            </menu>
         );
     }
 }

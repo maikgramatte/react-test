@@ -23,5 +23,4 @@ const render = () => ReactDOM.render(
 render()
 store.subscribe(render)
 
-//ReactDOM.render(<App />, document.getElementById('root'));
 registerServiceWorker();

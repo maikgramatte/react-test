@@ -20,6 +20,8 @@ const initialState = {
     keyword: '',
     viewmode: 'default',
     sort: 'default',
+    url: null,
+    page: 0
 }
 
 function getCurrentQuery(state) {
@@ -37,6 +39,10 @@ function getCurrentQuery(state) {
     url.sort = state.sort;
   }
 
+  if(state.page !== 0) {
+    url.page = state.page;
+  }
+
   return url;
 }
 
@@ -45,14 +51,12 @@ function searchResult(state = initialState, action) {
         case 'LISTING_LOAD':
             // Parse From Get
             var params = query.parse(window.location.search.slice(1));
-            console.log(params);
-
+            
             return {
                 ...state,
                 ...params,
-                results: samples,
-                count: samples.length,
-                loading: false
+                url: params,
+                loading: true
             }
 
         case 'SET_VIEWMODE':
@@ -79,19 +83,41 @@ function searchResult(state = initialState, action) {
             if(action.payload !== state.keyword) {
                 return {
                   ...state,
+                  page: 0,
                   keyword: action.payload
                 }
             }
 
             return state;      
+        
+        case 'GRID_SET_RESULTS':
+            var newstate = {
+                ...state,
+                results: action.payload.items,
+                count: action.payload.count,
+                loading: false
+            };
+            
+        return newstate;
+            
+        case 'GRID_SET_PAGE':
+            var newstate = {
+                ...state,
+                page: action.payload
+             };
 
+             return newstate;
+        break;     
+     
         case 'GRID_RELOAD':
             var newstate = {
                 ...state,
-                loading: true
+                loading: action.payload
             };
 
-            var new_query = query.stringify(getCurrentQuery(newstate));
+            newstate.url = getCurrentQuery(newstate);
+
+            var new_query = query.stringify(newstate.url);
             history.push('/?' + new_query, newstate);
 
             return newstate;

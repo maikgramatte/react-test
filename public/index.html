@@ -22,6 +22,93 @@
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
     <title>React App</title>
+
+    <style>
+      .ui.segment.row {
+        max-width: none !important;
+      }
+
+      .teaser {
+        border-radius: 10px;
+        box-shadow: 10px -2px 30px -4px rgba(0,0,0,0.4);
+        background: White;
+        border: 1px #eee solid;
+        margin: 1rem;
+        overflow: hidden;
+      }
+
+      .teaser .teaser__inner {
+        padding:  1rem 1.5rem;
+        overflow: hidden;
+        position: relative;
+        padding-top: 3rem;
+      }
+
+      .teaser .teaser__inner:before {
+        content: '';
+        top: 2rem;
+        height: 2px;
+        width: 40px;
+        background: Red;
+        position: absolute;
+        display: block;
+      }
+
+      .teaser img {
+        width: 100%;
+      }
+
+      .teaser h3 {
+        margin: 0;
+        height: 50px;
+        overflow: hidden;
+        -webkit-line-clamp: 2;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        text-overflow: ellipsis;
+        font-weight: normal;
+      }
+
+      .pagination .active {
+        background:darkblue;
+        color: White;
+      }
+
+      .teaser__image {
+        position: relative;
+      }
+
+      .teaser__image i {
+        position: absolute;
+        bottom: -1rem;
+        right: 1rem;
+        font-size: 1.2rem;
+        background: white;
+      }
+
+      .content-loader {
+        height: 100px;
+      }
+
+      menu.grid-view-switcher {
+        margin: .5rem 0;
+      }
+
+      menu.grid-view-switcher span {
+        transition: 0.4s;
+        color: #ccc;
+        cursor:pointer;
+        display: inline-block;
+      }
+
+      menu.grid-view-switcher span.active {
+        color: #888;
+      }
+
+
+    
+    </style>
+
   </head>
   <body>
     <noscript>

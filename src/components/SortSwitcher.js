@@ -1,6 +1,6 @@
 import React from 'react';
-import { Dropdown } from 'semantic-ui-react'
 import PropTypes from 'prop-types';
+import { Dropdown, Menu } from 'semantic-ui-react'
 
 const sortOptions = [
     {
@@ -13,21 +13,28 @@ const sortOptions = [
     }
 ];
 
+var divStyle = {
+    width: '100px',
+};
+
 class SortSwitcher extends React.Component {
 
     onSearchChange(e, data) {
-      this.props.onSortChange(data.value);
+      if(this.props.value !== data.value) {
+        this.props.onSortChange(data.value);
+      }  
     }  
 
     render() {
         return (
             <div>
                 <Dropdown 
-                    placeholder='Sort by' 
-                    fluid 
-                    value={this.props.value} 
                     options={sortOptions} 
-                    onChange={ (e, data) => this.onSearchChange(e, data) }/>
+                    fluid
+                    value={this.props.value}
+                    selection
+                    onChange={ (e, data) => this.onSearchChange(e, data) }
+                />
             </div>
         );
     }

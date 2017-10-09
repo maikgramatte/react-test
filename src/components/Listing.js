@@ -16,6 +16,7 @@ export default class Listing extends Component {
                     </div>
                     <div className="columns small-8">
                         <h3>{this.props.item.title}</h3>
+                        {this.props.item.abstract}
                     </div>
                 </div>
             </div>

@@ -42,7 +42,7 @@ export default class Header extends Component {
     return (
       <div className="clearfix">
         <h2>
-          <small>Search {this.props.keyword} within</small><br />
+          <small>Search "{this.props.keyword}" within</small><br />
           {title}
         </h2>
 
@@ -59,7 +59,7 @@ export default class Header extends Component {
         <hr />
       </div>
     );
-}
+  }
 }
 
 Header.propTypes = {

@@ -1,68 +1,145 @@
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux'
+import 'whatwg-fetch';
 import { connect } from 'react-redux';
-import { Dimmer, Loader, Image, Segment } from 'semantic-ui-react'
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+import { Grid, Dimmer, Loader, Image, Segment } from 'semantic-ui-react'
+import query from 'qs';
+
 import Teaser from '../components/Teaser';
 import Listing from '../components/Listing';
 import ViewModeSwitcher from '../components/ViewModeSwitcher';
 import SortSwitcher from '../components/SortSwitcher';
 import Header from '../components/Header';
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+import GridPager from '../components/Grid/GridPager';
 
-import { setViewMode, loadListings, gridChangeSort, gridReload, gridSearchKeyword } from '../actions';
+/**
+ * Actions
+ */
+import { setViewMode, loadListings, gridChangeSort, gridReload, gridSearchKeyword, gridSetData, gridSetPage } from '../actions';
+
 
 class ResultGrid extends Component {
 
   constructor(props) {
-      super(props);
+    super(props);
   }
 
   setViewMode(viewMode) {
     this.props.setViewMode(viewMode);
-    this.props.gridReload(); 
+    this.props.gridReload(false); 
   }
 
   setSort(sort) {
     this.props.gridChangeSort(sort);
-    this.props.gridReload();
+    this.props.gridReload(true);
+    setTimeout(()=> this.fetchData(), 100);
   }
 
   componentDidMount() {
     this.props.loadListings();
+    setTimeout(()=> this.fetchData(), 100);
+  }
+
+  fetchData() {
+    fetch('http://pharosui.maik/react.json?' + query.stringify(this.props.search.url), {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json"
+        }})    
+        .then((response) => {
+            return response.json()
+    }).then((result) => {      
+        this.props.gridSetData(result);
+    })
+  }
+
+  updatePager(page) {
+    this.props.gridSetPage(page);
+    this.props.gridReload(true); 
+
+    setTimeout(()=> this.fetchData(), 100);
   }
 
   setKeyword(keywords) {
     this.props.gridSearchKeyword(keywords);
-    this.props.gridReload();
+    this.props.gridReload(true); 
+
+    setTimeout(()=> this.fetchData(), 100);
   }
 
   renderLoadingState() {
+
+    if(!this.props.search.loading) {
+        return null;
+    }
+
     return (
-        <Dimmer inverted active>
-            <Loader inverted>Loading</Loader>
-        </Dimmer>
+        <Segment className="content-loader">
+            <Dimmer inverted active>
+                <Loader inverted>Loading</Loader>
+            </Dimmer>
+        </Segment>
     )
   }
 
-  render() {
-    var items;
+  noResults() {
+    if(!this.props.search.loading && this.props.search.count === 0) {
+        return (
+            <Segment className="text-center">
+                No Results.
+            </Segment>    
+        );
+    }
+  }
 
-    if(!this.props.search) {
+  renderResults() {
+    if(this.props.search.count === 0) {
+        return null;
+    }
+
+    var items;
+    const viewmode = this.props.search.viewmode;
+    
+    if(viewmode === 'default') {
+        items = this.props.search.results.map(item => <Teaser key="g`{item.id}`" item={item} />)
+    }
+    else {
+        items = this.props.search.results.map(item => <Listing key={item.id} item={item} />)
+    }
+
+    return (
+        <Segment className="row clearfix">
+            <Grid doubling stackable centered columns={6}>
+                <ReactCSSTransitionGroup 
+                    transitionName="example"
+                    transitionAppear={true}
+                    transitionAppearTimeout={1500}
+                    component="div"
+                    className="five column row"
+                    transitionEnterTimeout={300}
+                    transitionLeaveTimeout={300}>
+                    {items}
+                </ReactCSSTransitionGroup>    
+            </Grid>
+            <hr />    
+
+            <GridPager current={this.props.search.page} count={this.props.search.count} perpage={20} setPage={(new_page)=>this.updatePager(new_page)} />
+        </Segment>
+    );
+  }
+
+  render() {
+    if(!this.props.search) {        
       return (
-        <Dimmer active>
-            <Loader active>Loading</Loader>
-        </Dimmer>
+        <Segment>
+           
+        </Segment>    
       );
     }
 
-      if(this.props.search.viewmode === 'default') {
-          items = this.props.search.results.map(item => <Teaser key={item.id} item={item} />)
-      }
-      else {
-          items = this.props.search.results.map(item => <Listing key={item.id} item={item} />)
-      }
-
-      return (
+     
+    return (
           <Segment className="row" data-vm={ this.props.search.viewmode }>
               <Header 
                   count={this.props.search.count} 
@@ -72,9 +149,9 @@ class ResultGrid extends Component {
               />
               <div className="row">
                   <div className="column small-4">
-                    ...
+                    Show Filters
                   </div>    
-                  <div className="column small-4">
+                  <div className="column small-4 text-center">
                       <ViewModeSwitcher 
                       viewmode={ this.props.search.viewmode } 
                       setViewMode={(viewmode) => this.setViewMode(viewmode)} 
@@ -87,11 +164,11 @@ class ResultGrid extends Component {
                       />
                   </div>   
               </div>    
-              <Segment className="row clearfix">
-                <ReactCSSTransitionGroup transitionName="example" transitionEnterTimeout={700} transitionLeaveTimeout={700}>
-                  {items}
-                </ReactCSSTransitionGroup>
-              </Segment>
+
+              {this.renderLoadingState()}    
+              {this.renderResults()}
+              {this.noResults()}
+
           </Segment>
       );
   }
@@ -107,6 +184,8 @@ const mapDispatchToProps = dispatch => ({
   gridChangeSort: bindActionCreators(gridChangeSort, dispatch),
   gridReload: bindActionCreators(gridReload, dispatch),
   gridSearchKeyword: bindActionCreators(gridSearchKeyword, dispatch),
+  gridSetData: bindActionCreators(gridSetData, dispatch),
+  gridSetPage: bindActionCreators(gridSetPage, dispatch),
 })
 
 export default connect(
