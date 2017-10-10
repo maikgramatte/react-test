@@ -2,15 +2,11 @@ import React, { Component } from 'react'
 import ResultGrid from './ResultGrid';
 
 class mainApp extends Component {
-    constructor(props) {
-      super(props)
-    }
-   
     render() {
       return (
-        <div>
+        <div style={{padding: '1rem'}}>
           <div className="panel">
-              <h2>Alexander Street React PropType</h2>
+              <h2>Alexander Street React.js Grid-PropType</h2>
           </div>
 
           <ResultGrid />

@@ -4,10 +4,6 @@ import { Icon, Popup } from 'semantic-ui-react'
 
 export default class ViewModeSwitcher extends Component {
 
-    constructor(props) {
-        super(props);
-    }
-
     render() {
         const callback = this.props.setViewMode;
         const currentValue = this.props.viewmode

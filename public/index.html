@@ -8,7 +8,6 @@
       manifest.json provides metadata used when your web app is added to the
       homescreen on Android. See https://developers.google.com/web/fundamentals/engage-and-retain/web-app-manifest/
     -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/foundation/5.5.3/css/foundation.min.css" />  
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.12/semantic.min.css"></link>
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json">
     <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico">
@@ -26,6 +25,14 @@
     <style>
       .ui.segment.row {
         max-width: none !important;
+      }
+
+      .text-center {
+        text-align: center;
+      }
+
+      .text-left {
+        text-align: left;
       }
 
       .teaser {
@@ -69,11 +76,6 @@
         font-weight: normal;
       }
 
-      .pagination .active {
-        background:darkblue;
-        color: White;
-      }
-
       .teaser__image {
         position: relative;
       }
@@ -106,7 +108,108 @@
       }
 
 
-    
+      .header-results {
+        padding-bottom: 1rem;
+      }
+
+      .header-results .columns {
+        width: auto;
+      }
+
+      .header-results__search-results {
+        padding-top: 2.5rem;
+        display: block;
+        font-size: 1.5rem;
+        font-weight: 100;
+        color: darkgray;
+      }
+
+      .header-results form .ui.input {
+        width: 100%;
+        margin-top: 2.5rem;
+        max-width: 250px;
+        float: right;
+      }
+
+      .header-results form .ui.input input {
+        font-size: 1rem;
+        height: auto;  
+      }
+
+      .panel {
+        padding: 1rem;
+        background: #eee;
+        margin: 1rem;
+      }
+
+
+      .image-banner {
+        height: 100px;
+        background-size: cover;
+        background-repeat: no-repeat;
+        /**background-image: url("//dywyzs4z4lwvw.cloudfront.net/sites/default/files/styles/banner-gt1024/public/landing_page/MPLS_LAZR_Hero.jpg?itok=QKtPJfUQ");*/
+        display: block;
+        color: white;
+        background: #511f7f;
+        font-size: 2rem;
+        padding: 1rem;
+        text-transform: capitalize;
+      }
+
+
+      .slide-in-out-appear {
+        opacity: 0.01;
+        transition: all .5s ease-in;
+      }
+      
+      .slide-in-out-appear-active {
+        opacity: 1;
+       
+      }
+
+      .slide-in-out-leave {
+        position: relative;
+        right: 0;
+        opacity: 0;
+      }
+
+      .slide-in-out-leave-active {
+        right: -100px;
+      }
+
+      .pagination {
+        list-style: none;
+        padding: 0;
+        font-size: 1rem;
+        margin: 0;
+      }
+
+      .pagination li {
+        display: inline-block;
+      }
+
+      .pagination li a {
+        display: block;
+        padding: 0.5rem;
+        border: 1px #eee solid;
+        cursor: pointer;
+        margin: 0.2rem;
+      }
+
+      .pagination li a:hover {
+        background:#eee;
+      }
+
+      .pagination li.disabled {
+        display: none;
+      }
+
+      .pagination li.active a {
+        background:darkblue;
+        color: White;
+      }
+
+
     </style>
 
   </head>
@@ -115,6 +218,11 @@
       You need to enable JavaScript to run this app.
     </noscript>
     <div id="root" data-type="collection"></div>
+
+    <div style="height: 100px; background: #eee">
+      FOOTER
+    </div>
+
     <!--
       This HTML file is a template.
       If you open it directly in the browser, you will see an empty page.

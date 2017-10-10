@@ -53,9 +53,6 @@ class GridPager extends React.Component {
       this.setState(
         { current : newPage }
       );
-
-
-
     }
     
     render() {

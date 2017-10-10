@@ -2,70 +2,54 @@ import React, { Component } from 'react';
 import { bindActionCreators } from 'redux'
 import 'whatwg-fetch';
 import { connect } from 'react-redux';
-import { Grid, Dimmer, Loader, Image, Segment } from 'semantic-ui-react'
-import query from 'qs';
-
-import Teaser from '../components/Teaser';
-import Listing from '../components/Listing';
+import { Grid, Dimmer, Loader, Segment } from 'semantic-ui-react'
+import * as actionCreators from "../actions/"
+import Teaser from '../components/Teasers/Teaser';
+import Listing from '../components/Teasers/Listing';
+import NoResults from '../components/SearchResult/NoResults';
 import ViewModeSwitcher from '../components/ViewModeSwitcher';
 import SortSwitcher from '../components/SortSwitcher';
 import Header from '../components/Header';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import GridPager from '../components/Grid/GridPager';
-
-/**
- * Actions
- */
-import { setViewMode, loadListings, gridChangeSort, gridReload, gridSearchKeyword, gridSetData, gridSetPage } from '../actions';
+import GridPerPage from '../components/Grid/Navigation/GridPerPage';
 
 
 class ResultGrid extends Component {
 
-  constructor(props) {
-    super(props);
-  }
-
   setViewMode(viewMode) {
-    this.props.setViewMode(viewMode);
-    this.props.gridReload(false); 
+    this.props.setViewMode(viewMode); 
   }
 
   setSort(sort) {
-    this.props.gridChangeSort(sort);
-    this.props.gridReload(true);
-    setTimeout(()=> this.fetchData(), 100);
+    this.updateStoreData({
+        sort: sort
+    }); 
   }
 
   componentDidMount() {
-    this.props.loadListings();
-    setTimeout(()=> this.fetchData(), 100);
-  }
-
-  fetchData() {
-    fetch('http://pharosui.maik/react.json?' + query.stringify(this.props.search.url), {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json"
-        }})    
-        .then((response) => {
-            return response.json()
-    }).then((result) => {      
-        this.props.gridSetData(result);
-    })
+    this.props.lazrReactGridInitialize();
+    this.props.loadData();
   }
 
   updatePager(page) {
-    this.props.gridSetPage(page);
-    this.props.gridReload(true); 
-
-    setTimeout(()=> this.fetchData(), 100);
+    this.updateStoreData({
+        page: page
+    }); 
   }
 
   setKeyword(keywords) {
-    this.props.gridSearchKeyword(keywords);
-    this.props.gridReload(true); 
+    this.updateStoreData({
+        keyword: keywords
+    });
+  }
 
-    setTimeout(()=> this.fetchData(), 100);
+  updateStoreData(data) {
+    this.props.lazrReactGridUpdateStoreData({
+        ...data,
+        loading: true
+    });
+    this.props.loadData();
   }
 
   renderLoadingState() {
@@ -86,9 +70,7 @@ class ResultGrid extends Component {
   noResults() {
     if(!this.props.search.loading && this.props.search.count === 0) {
         return (
-            <Segment className="text-center">
-                No Results.
-            </Segment>    
+            <NoResults />
         );
     }
   }
@@ -100,32 +82,36 @@ class ResultGrid extends Component {
 
     var items;
     const viewmode = this.props.search.viewmode;
-    
+
     if(viewmode === 'default') {
-        items = this.props.search.results.map(item => <Teaser key="g`{item.id}`" item={item} />)
+        items = this.props.search.results.map(item => <Teaser key={item.id} item={item} />)
+        items = <Grid doubling stackable centered columns={6}>{items}</Grid>;
     }
     else {
         items = this.props.search.results.map(item => <Listing key={item.id} item={item} />)
     }
 
     return (
-        <Segment className="row clearfix">
-            <Grid doubling stackable centered columns={6}>
-                <ReactCSSTransitionGroup 
-                    transitionName="example"
-                    transitionAppear={true}
-                    transitionAppearTimeout={1500}
-                    component="div"
-                    className="five column row"
-                    transitionEnterTimeout={300}
-                    transitionLeaveTimeout={300}>
-                    {items}
-                </ReactCSSTransitionGroup>    
-            </Grid>
-            <hr />    
-
-            <GridPager current={this.props.search.page} count={this.props.search.count} perpage={20} setPage={(new_page)=>this.updatePager(new_page)} />
-        </Segment>
+        <ReactCSSTransitionGroup 
+            transitionName="slide-in-out"
+            transitionAppear={true}
+            transitionAppearTimeout={500}
+            component="div"
+            transitionEnterTimeout={500}
+            transitionLeaveTimeout={500}>
+            <div key={this.props.search.viewmode}>
+                    <ReactCSSTransitionGroup 
+                        transitionName="example"
+                        transitionAppear={true}
+                        transitionAppearTimeout={1500}
+                        component="div"
+                        className="five column row"
+                        transitionEnterTimeout={300}
+                        transitionLeaveTimeout={300}>
+                            {items}
+                    </ReactCSSTransitionGroup>    
+            </div>
+        </ReactCSSTransitionGroup>   
     );
   }
 
@@ -133,31 +119,38 @@ class ResultGrid extends Component {
     if(!this.props.search) {        
       return (
         <Segment>
-           
+           Loading
         </Segment>    
       );
     }
 
      
     return (
-          <Segment className="row" data-vm={ this.props.search.viewmode }>
+        <div>
+            <div className="image-banner">
+                Comics in the 17th Century
+              </div>  
+          <Segment data-vm={ this.props.search.viewmode }>
               <Header 
                   count={this.props.search.count} 
                   keyword={this.props.search.keyword} 
+                  facets={this.props.search.facets}
                   title={this.props.search.title} 
                   onChangeSearch={(keyword) => this.setKeyword(keyword)} 
               />
-              <div className="row">
-                  <div className="column small-4">
+              <hr style={{clear: 'both'}}/>
+              
+              <div className="ui stackable three column grid">
+                  <div className="column">
                     Show Filters
                   </div>    
-                  <div className="column small-4 text-center">
+                  <div className="column centered">
                       <ViewModeSwitcher 
                       viewmode={ this.props.search.viewmode } 
                       setViewMode={(viewmode) => this.setViewMode(viewmode)} 
                   />
                   </div>   
-                  <div className="column small-4">
+                  <div className="column">
                       <SortSwitcher 
                           value={ this.props.search.sort }
                           onSortChange={(sort) => this.setSort(sort)} 
@@ -169,7 +162,37 @@ class ResultGrid extends Component {
               {this.renderResults()}
               {this.noResults()}
 
+              {!this.props.search.lazyload && !this.props.search.loading &&
+                    <div className="text-center" id="grid-bottom-element">
+                        <GridPerPage 
+                            onChange={(value) => this.updateStoreData({
+                                lazyload: true, 
+                                perpage: value, 
+                                page: 0,
+                            })} 
+                            value={this.props.search.perpage} 
+                            page={this.props.search.page} 
+                        />
+                        <GridPager 
+                            current={this.props.search.page} 
+                            count={this.props.search.count} 
+                            perpage={this.props.search.perpage} 
+                            setPage={(new_page)=>this.updatePager(new_page)} 
+                        />
+                    </div>
+                }    
+
+                {this.props.search.lazyload &&
+                    <Segment className="content-loader">
+                        <Dimmer inverted active>
+                            <Loader inverted>Loading more items</Loader>
+                        </Dimmer>
+                    </Segment>
+                }  
+
+
           </Segment>
+          </div>
       );
   }
 }
@@ -178,17 +201,12 @@ const mapStateToProps = state => ({
     search: state.search_results,
 })
   
-const mapDispatchToProps = dispatch => ({
-  setViewMode: bindActionCreators(setViewMode, dispatch),
-  loadListings: bindActionCreators(loadListings, dispatch),
-  gridChangeSort: bindActionCreators(gridChangeSort, dispatch),
-  gridReload: bindActionCreators(gridReload, dispatch),
-  gridSearchKeyword: bindActionCreators(gridSearchKeyword, dispatch),
-  gridSetData: bindActionCreators(gridSetData, dispatch),
-  gridSetPage: bindActionCreators(gridSetPage, dispatch),
-})
+const mapDispatchersToProps = (dispatch) => {
+    return bindActionCreators(actionCreators, dispatch);
+}
 
 export default connect(
     mapStateToProps,
-    mapDispatchToProps
+    mapDispatchersToProps,
+    //mapDispatchToProps
 )(ResultGrid);

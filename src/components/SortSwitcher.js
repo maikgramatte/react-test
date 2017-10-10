@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Dropdown, Menu } from 'semantic-ui-react'
+import { Dropdown } from 'semantic-ui-react'
 
 const sortOptions = [
     {
@@ -12,10 +12,6 @@ const sortOptions = [
         value: 'relevance',
     }
 ];
-
-var divStyle = {
-    width: '100px',
-};
 
 class SortSwitcher extends React.Component {
 

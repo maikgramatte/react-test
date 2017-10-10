@@ -1,14 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Grid, Segment } from 'semantic-ui-react'
+import { Grid } from 'semantic-ui-react'
 import { Icon } from 'semantic-ui-react'
+import ImgPreloader from '../Grid/ImageLoader';
+
 
 export default class Teaser extends Component {
-
-    constructor(props) {
-        super(props);
-    }
-
     getIcon() {
         if(this.props.item.format === 'Audio') {
             return (
@@ -29,11 +26,13 @@ export default class Teaser extends Component {
     }
 
     render() {
+        var key = `k${this.props.item.id}`;
+
         return (
-            <Grid.Column>
+            <Grid.Column className="column__grid" key={key}>
                 <div className="teaser">
                     <div className="teaser__image">
-                        <img alt={this.props.item.title} src={this.props.item.cover} />
+                        <ImgPreloader  alt={this.props.item.title} title={this.props.item.title} src={this.props.item.cover} />
                         {this.getIcon()}
                     </div>
                     <div className="teaser__inner">

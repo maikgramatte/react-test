@@ -11,6 +11,12 @@ let store = createStore(
   +  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
 );
 
+store.dispatch({type: 'Foo'});
+
+store.subscribe(() => {
+  conole.log('store changes', this.getState());
+});
+
 class App extends Component {
   render() {
     return (

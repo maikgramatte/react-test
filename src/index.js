@@ -4,11 +4,13 @@ import './index.css';
 import MainApp from './containers/mainApp';
 import registerServiceWorker from './registerServiceWorker';
 import { Provider } from 'react-redux'
-import { createStore } from 'redux'
+import { createStore, applyMiddleware } from 'redux'
 import mainAppReducers from './reducers'
+import thunk from "redux-thunk";
 
 let store = createStore(
-    mainAppReducers
+    mainAppReducers,
+    applyMiddleware(thunk)
 );
 
 const rootEl = document.getElementById('root')

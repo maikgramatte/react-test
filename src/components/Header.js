@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Input, Button } from 'semantic-ui-react'
+import { Icon, Input } from 'semantic-ui-react'
+import SearchFilterIndicator from './SearchResult/SearchFilterIndicator';
 
 export default class Header extends Component {
 
@@ -8,7 +9,7 @@ export default class Header extends Component {
     super(props);
 
     this.state = {
-      loading: false,
+      loading: true,
       value: this.props.keyword
     }
   }
@@ -16,7 +17,8 @@ export default class Header extends Component {
   componentWillReceiveProps(nextProps) {
     this.setState(
       {
-        value: nextProps.keyword
+        value: nextProps.keyword,
+        loading: false
       }
     );
   }
@@ -29,8 +31,21 @@ export default class Header extends Component {
     );
   }
 
+  onResetSearch() {
+    this.setState({
+      loading: true,
+    });
+
+    this.props.onChangeSearch('');
+  }
+
   onSubmitSearch(e) {
     e.preventDefault();
+
+    this.setState({
+      loading: true,
+    });
+
     this.props.onChangeSearch(this.state.value);
 
     return false;
@@ -40,23 +55,35 @@ export default class Header extends Component {
     const title = this.props.title;
 
     return (
-      <div className="clearfix">
-        <h2>
-          <small>Search "{this.props.keyword}" within</small><br />
+      <div className="ui stackable three column grid header-results">
+       <h2 className="column">
+          {this.props.keyword &&
+            <small>Search "{this.props.keyword}" within</small>
+          } 
+          {!this.props.keyword &&
+            <small>View</small>
+          }
+          <br />
           {title}
         </h2>
-
-        <div className="right">
+        <div className="column">
+          {!this.state.loading && this.props.count !== 0 &&
+            <span className="header-results__search-results">
+              { this.props.count } Results 
+            </span>
+          }
+        </div>  
+        <div className="column">
           <form onSubmit={(e)=> this.onSubmitSearch(e)}>
-            <Input size='large' loading={this.state.loading} placeholder='Search....' value={ this.state.value } onChange={(e, data) => this.onChangeSearch(data) }/>
-            <Button size='large' onClick={(e)=> this.onSubmitSearch(e)}>Search</Button>
+          <Input
+            value={ this.state.value }
+            onChange={(e, data) => this.onChangeSearch(data) }
+            icon={<Icon name='search' inverted circular link onClick={(e)=> this.onSubmitSearch(e)} />}
+            placeholder='Search...'
+          />
           </form>
-        </div>    
-
-        <div>
-            <span className="label">{this.props.count}</span> Search Results
-        </div>    
-        <hr />
+        </div>
+        <SearchFilterIndicator onResetSearch={() => this.onResetSearch() } keyword={this.props.keyword} facets={this.props.facets} filters={[]} />
       </div>
     );
   }
@@ -66,5 +93,6 @@ Header.propTypes = {
     title: PropTypes.string.isRequired,
     count: PropTypes.number.isRequired,
     keyword: PropTypes.string.isRequired,
-    onChangeSearch: PropTypes.func.isRequired
+    onChangeSearch: PropTypes.func.isRequired,
+    facets: PropTypes.array.isRequired,
 }
