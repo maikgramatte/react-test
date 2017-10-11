@@ -1,8 +1,8 @@
 
 export default {
     // Title of the Collection
-    title: 'Collection',
-    initialized: true,
+    title: '60 Minutes: 1997-2014',
+    initialized: false,
     loading: true,
     results: [],
     facets: [],
@@ -14,4 +14,6 @@ export default {
     page: 0,
     perpage: 20,
     lazyload: false,
+    httpError: false,
+    timer: null,
 }

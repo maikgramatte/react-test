@@ -2,15 +2,15 @@
 export default () => (
   [
     {
-        text: '20 Results',
+        text: 'Show 20 Results',
         value: 20
     },
     {
-        text: '40 Results',
+        text: 'Show 40 Results',
         value: 40
     },
     {
-        text: '60 Results',
+        text: 'Show 60 Results',
         value: 60
     },
   ]
@@ -18,3 +18,4 @@ export default () => (
 
 export const PerPageDefault = 20;
 export const PerPageMax = 60;
+export const PerPageSteps = 20;

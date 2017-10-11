@@ -10,14 +10,18 @@ export default class Header extends Component {
 
     this.state = {
       loading: true,
+      count: 0,
       value: this.props.keyword
     }
   }
 
   componentWillReceiveProps(nextProps) {
+    console.log(nextProps);
+
     this.setState(
       {
         value: nextProps.keyword,
+        count: nextProps.count,
         loading: false
       }
     );
@@ -55,7 +59,7 @@ export default class Header extends Component {
     const title = this.props.title;
 
     return (
-      <div className="ui stackable three column grid header-results">
+      <div className="ui stackable three column grid header-results grid-max-width">
        <h2 className="column">
           {this.props.keyword &&
             <small>Search "{this.props.keyword}" within</small>
@@ -67,7 +71,7 @@ export default class Header extends Component {
           {title}
         </h2>
         <div className="column">
-          {!this.state.loading && this.props.count !== 0 &&
+          {this.props.count !== 0 &&
             <span className="header-results__search-results">
               { this.props.count } Results 
             </span>

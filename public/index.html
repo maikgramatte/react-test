@@ -40,29 +40,48 @@
         box-shadow: 10px -2px 30px -4px rgba(0,0,0,0.4);
         background: White;
         border: 1px #eee solid;
-        margin: 1rem;
         overflow: hidden;
+        transition: all 0.2s cubic-bezier(0, 0, 0, 1.21);
+        min-width: 200px;
+        position: relative;
+        left: 0;
+        right: 0;
+      }
+
+      .column__grid:hover .teaser > div {
+        z-index: 101;
+        position: relative;
+      }
+
+      .column__grid:hover .teaser {
+        position: absolute;
+        left: -10px;
+        right: -10px;
+        top: 0px;
+        z-index: 100;
+        box-shadow: 0px 0px 5px 5px rgba(99, 92, 92, 0.4);
       }
 
       .teaser .teaser__inner {
         padding:  1rem 1.5rem;
         overflow: hidden;
         position: relative;
-        padding-top: 3rem;
+        padding-top: 2.5rem;
       }
 
       .teaser .teaser__inner:before {
         content: '';
-        top: 2rem;
-        height: 2px;
+        top: 1.5rem;
+        height: 3px;
         width: 40px;
-        background: Red;
+        background: #ce2d2d;
         position: absolute;
         display: block;
       }
 
       .teaser img {
         width: 100%;
+        display: block;
       }
 
       .teaser h3 {
@@ -78,6 +97,7 @@
 
       .teaser__image {
         position: relative;
+        box-shadow: 10px 9px 30px -6px rgba(0,0,0,0.4);
       }
 
       .teaser__image i {
@@ -137,9 +157,7 @@
       }
 
       .panel {
-        padding: 1rem;
-        background: #eee;
-        margin: 1rem;
+        background: #eee !important;
       }
 
 
@@ -209,6 +227,22 @@
         color: White;
       }
 
+      .column img {
+        width: 100%;
+        height: auto;
+      }
+
+      .grid-results {
+        background: -webkit-linear-gradient(top,#f2f2f2 0,rgba(242,242,242,.99) 1%,rgba(255,255,255,0) 30%);
+        padding: 4rem 1rem;
+        padding-bottom: 2rem;
+      }
+
+      .grid-max-width {
+        max-width: 1200px;
+        margin: 0 auto !important;
+        
+      }
 
     </style>
 
@@ -217,10 +251,10 @@
     <noscript>
       You need to enable JavaScript to run this app.
     </noscript>
-    <div id="root" data-type="collection"></div>
+    <div id="root" data-type="collection" data-collection-id="lava"></div>
 
-    <div style="height: 100px; background: #eee">
-      FOOTER
+    <div style="height: 100px;" class="ui segment panel text-center">
+      Footer-Element
     </div>
 
     <!--

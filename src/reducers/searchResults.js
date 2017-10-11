@@ -38,7 +38,8 @@ function getCurrentQuery(state) {
   if(state.facets.length > 0) {
     url.f = [];
     state.facets.map(function(facet){
-        url.f.push(facet.type + SLIT_FACET_URL + facet.label);         
+        url.f.push(facet.type + SLIT_FACET_URL + facet.label);       
+        return true;  
     });
   }
 
@@ -65,6 +66,7 @@ function searchResult(state = initialState, action) {
                         label: res[1]    
                     })
 
+                    return true;
                 });
             }
             
@@ -75,15 +77,31 @@ function searchResult(state = initialState, action) {
                 url: params,
                 loading: true
             }
+        
+        case 'GRID_SEARCH_REMOVE_FACET':
+        
+            var facetsCurrentSearch = [];
+            state.facets.map(function(item){
+                if(item != action.payload) {
+                    facetsCurrentSearch.push(item);    
+                }
 
-        case 'GRID_SEARCH_ADD_FACET':
-            
-            var facets = state.facets;
-            facets.push(action.payload);    
+                return true;
+            });    
 
             return {
                 ...state,
-                facets: facets,
+                facets: facetsCurrentSearch
+            }
+
+        case 'GRID_SEARCH_ADD_FACET':
+            
+            var facetsCurrent = state.facets;
+            facetsCurrent.push(action.payload);    
+
+            return {
+                ...state,
+                facets: facetsCurrent,
                 loading: true
             };
 
@@ -115,20 +133,20 @@ function searchResult(state = initialState, action) {
             newstate.url = getCurrentQuery(newstate);
             
             var new_query = query.stringify(newstate.url);
-            history.push('/?' + new_query, newstate);
+            history.push('/?' + new_query);
 
             return newstate;
      
         case 'GRID_RELOAD':
-            var newstate = {
+            var newstateReload = {
                 ...state,
                 loading: action.payload
             };
 
-            newstate.url = getCurrentQuery(newstate);
-            history.push('/?' + query.stringify(newstate.url), newstate);
+            newstateReload.url = getCurrentQuery(newstateReload);
+            history.push('/?' + query.stringify(newstateReload.url), newstateReload);
 
-            return newstate;
+            return newstateReload;
 
         default:
             return state

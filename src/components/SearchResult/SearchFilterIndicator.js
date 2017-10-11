@@ -2,10 +2,18 @@ import React, {Component} from 'react';
 import { Icon, Label } from 'semantic-ui-react';
 import PropTypes from 'prop-types';
 
-export default class SearchFilterIndicator extends Component {
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux';
+import { gridRemoveSearchFacet } from '../../actions';
+
+class SearchFilterIndicator extends Component {
   
   removeKeyword() {
     this.props.onResetSearch();
+  }
+
+  removeFacet(facet) {
+    this.props.gridRemoveSearchFacet(facet);
   }
 
   renderFacets() {
@@ -14,11 +22,20 @@ export default class SearchFilterIndicator extends Component {
     }
 
     var links = [];
-    this.props.facets.map(function(item){
-      links.push(<Label as='a' title="Remove Category">
-        {item.label}  
+    this.props.facets.map((item) => {
+      var label = item.label.split('|'); 
+
+      var label =item.label.split('|'); 
+      var full = label.join(' >> ');
+      var last = label[label.length - 1];
+      var full_label = `Remove category: ${full}`;
+
+      links.push(<Label as='a' title={full_label} key={full_label} onClick={() => this.removeFacet(item)}>
+        {last}
         <Icon name='delete'/>
       </Label>);
+
+      return true;
     });
 
     return links;
@@ -50,3 +67,15 @@ SearchFilterIndicator.propTypes = {
   facets: PropTypes.array.isRequired,
   onResetSearch: PropTypes.func.isRequired,
 }
+const mapStateToProps = state => ({
+
+})
+
+const mapDispatchToProps = dispatch => ({
+  gridRemoveSearchFacet: bindActionCreators(gridRemoveSearchFacet, dispatch)
+})
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(SearchFilterIndicator);

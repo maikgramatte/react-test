@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux'
-import 'whatwg-fetch';
 import { connect } from 'react-redux';
 import { Grid, Dimmer, Loader, Segment } from 'semantic-ui-react'
 import * as actionCreators from "../actions/"
+
 import Teaser from '../components/Teasers/Teaser';
 import Listing from '../components/Teasers/Listing';
 import NoResults from '../components/SearchResult/NoResults';
@@ -13,6 +13,7 @@ import Header from '../components/Header';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import GridPager from '../components/Grid/GridPager';
 import GridPerPage from '../components/Grid/Navigation/GridPerPage';
+import ErrorPage from '../components/SearchResult/Error';
 
 
 class ResultGrid extends Component {
@@ -59,7 +60,7 @@ class ResultGrid extends Component {
     }
 
     return (
-        <Segment className="content-loader">
+        <Segment className="content-loader grid-max-width">
             <Dimmer inverted active>
                 <Loader inverted>Loading</Loader>
             </Dimmer>
@@ -76,93 +77,47 @@ class ResultGrid extends Component {
   }
 
   renderResults() {
-    if(this.props.search.count === 0) {
-        return null;
-    }
-
     var items;
     const viewmode = this.props.search.viewmode;
 
     if(viewmode === 'default') {
         items = this.props.search.results.map(item => <Teaser key={item.id} item={item} />)
-        items = <Grid doubling stackable centered columns={6}>{items}</Grid>;
+        items = <Grid doubling stackable columns={5}>{items}</Grid>;
     }
     else {
         items = this.props.search.results.map(item => <Listing key={item.id} item={item} />)
     }
 
     return (
-        <ReactCSSTransitionGroup 
-            transitionName="slide-in-out"
-            transitionAppear={true}
-            transitionAppearTimeout={500}
-            component="div"
-            transitionEnterTimeout={500}
-            transitionLeaveTimeout={500}>
-            <div key={this.props.search.viewmode}>
-                    <ReactCSSTransitionGroup 
-                        transitionName="example"
-                        transitionAppear={true}
-                        transitionAppearTimeout={1500}
-                        component="div"
-                        className="five column row"
-                        transitionEnterTimeout={300}
-                        transitionLeaveTimeout={300}>
-                            {items}
-                    </ReactCSSTransitionGroup>    
-            </div>
-        </ReactCSSTransitionGroup>   
+        <div key={this.props.search.viewmode} className="grid-results">
+            {this.renderLoadingState()}
+            {this.noResults()}
+            
+            {items &&
+                <Segment vertical className="grid-max-width">
+                    {items}
+                </Segment>    
+            }
+        </div>
     );
   }
 
-  render() {
-    if(!this.props.search) {        
-      return (
-        <Segment>
-           Loading
-        </Segment>    
-      );
-    }
 
-     
-    return (
-        <div>
-            <div className="image-banner">
-                Comics in the 17th Century
-              </div>  
-          <Segment data-vm={ this.props.search.viewmode }>
-              <Header 
-                  count={this.props.search.count} 
-                  keyword={this.props.search.keyword} 
-                  facets={this.props.search.facets}
-                  title={this.props.search.title} 
-                  onChangeSearch={(keyword) => this.setKeyword(keyword)} 
-              />
-              <hr style={{clear: 'both'}}/>
-              
-              <div className="ui stackable three column grid">
-                  <div className="column">
-                    Show Filters
-                  </div>    
-                  <div className="column centered">
-                      <ViewModeSwitcher 
-                      viewmode={ this.props.search.viewmode } 
-                      setViewMode={(viewmode) => this.setViewMode(viewmode)} 
-                  />
-                  </div>   
-                  <div className="column">
-                      <SortSwitcher 
-                          value={ this.props.search.sort }
-                          onSortChange={(sort) => this.setSort(sort)} 
-                      />
-                  </div>   
-              </div>    
+    renderBottomNavigation() {
+        if(this.props.search.count <= 20) {
+            return null;
+        }
 
-              {this.renderLoadingState()}    
-              {this.renderResults()}
-              {this.noResults()}
+        return (
+            <Segment vertical>
+                <hr />
 
-              {!this.props.search.lazyload && !this.props.search.loading &&
+                {this.props.search.lazyload &&
+                    <Dimmer inverted active>
+                        <Loader inverted>Loading more items</Loader>
+                    </Dimmer>
+                }  
+                <div className="grid-max-width">
                     <div className="text-center" id="grid-bottom-element">
                         <GridPerPage 
                             onChange={(value) => this.updateStoreData({
@@ -180,21 +135,67 @@ class ResultGrid extends Component {
                             setPage={(new_page)=>this.updatePager(new_page)} 
                         />
                     </div>
-                }    
+                </div>
+            </Segment>
+        )
+    }
 
-                {this.props.search.lazyload &&
-                    <Segment className="content-loader">
-                        <Dimmer inverted active>
-                            <Loader inverted>Loading more items</Loader>
-                        </Dimmer>
-                    </Segment>
-                }  
+    render() {
+        if(this.props.search.httpError) {
+            return <ErrorPage type={this.props.search.httpError} />;
+        }
 
+        if(this.props.search.initialized === false) {        
+            return (
+            <Segment key="loading" className="content-loader">
+                <Dimmer inverted active>
+                    <Loader inverted>Loading items...</Loader>
+                </Dimmer>
+            </Segment>    
+            );
+        }
+        
+        return (
+            <div>
+                <div className="image-banner">
+                    <div className="grid-max-width">
+                        Comics in the 17th Century / Loaded in <label>{this.props.search.timer}sec</label>
+                    </div>
+                </div>  
+          
+                <Header 
+                    count={this.props.search.count} 
+                    keyword={this.props.search.keyword} 
+                    className="grid-max-width"
+                    facets={this.props.search.facets}
+                    title={this.props.search.title} 
+                    onChangeSearch={(keyword) => this.setKeyword(keyword)} 
+                />
+                <hr style={{clear: 'both'}}/>
+                
+                <div className="ui stackable three column grid grid-max-width">
+                    <div className="column">
+                        Show Filters
+                    </div>    
+                    <div className="column centered">
+                        <ViewModeSwitcher 
+                        viewmode={ this.props.search.viewmode } 
+                        setViewMode={(viewmode) => this.setViewMode(viewmode)} 
+                    />
+                    </div>   
+                    <div className="column">
+                        <SortSwitcher 
+                            value={ this.props.search.sort }
+                            onSortChange={(sort) => this.setSort(sort)} 
+                        />
+                    </div>   
+                </div>    
 
-          </Segment>
-          </div>
-      );
-  }
+                {this.renderResults()}
+                {this.renderBottomNavigation()}
+            </div>
+        );
+    }
 }
 
 const mapStateToProps = state => ({

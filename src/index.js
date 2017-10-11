@@ -13,7 +13,10 @@ let store = createStore(
     applyMiddleware(thunk)
 );
 
-const rootEl = document.getElementById('root')
+const rootEl = document.getElementById('root');
+console.log(
+  rootEl.getAttribute('data-type')
+);
 
 const render = () => ReactDOM.render(
   <Provider store={store}>

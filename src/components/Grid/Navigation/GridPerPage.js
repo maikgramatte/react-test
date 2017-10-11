@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
-import { Dropdown } from 'semantic-ui-react'
+import { Dropdown, Icon, Button, Segment } from 'semantic-ui-react'
 import PropTypes from 'prop-types';
-import pagerPerPageOptions, { PerPageMax } from './Options';
+import pagerPerPageOptions, { PerPageMax, PerPageSteps } from './Options';
 import Scroll from 'react-scroll';
 
 const scroll  = Scroll.animateScroll;
@@ -21,7 +21,7 @@ export default class GridPerPage extends Component {
   }
 
   componentDidMount() {
-    if(this.props.page === 0 && this.state.value !== PerPageMax && false) {
+    if(this.props.page === 0 && this.state.value !== PerPageMax) {
       setTimeout(() => {
         window.addEventListener('scroll', this.boundInfiniteScroll);
       }, 1000);   
@@ -107,17 +107,21 @@ export default class GridPerPage extends Component {
     );
   }
   
+
   render(){
+    if(this.state.currentValue !== PerPageMax) {
+      return (
+        <Button fluid basic className="segment" as="div" href="#" onClick={() => this.onElementChanged(PerPageSteps + this.state.currentValue)}>
+          <Icon name="angle double down" /> Show {PerPageSteps} more
+        </Button>
+      )
+    }
+   
     return (
-      <div className="panel">
-        Show <Dropdown 
-          inline 
-          options={pagerPerPageOptions()} 
-          onChange={(e, data) => this.onElementChanged(data.value)} 
-          defaultValue={this.state.currentValue} 
-      />
-      </div>
-    );
+      <Button fluid basic className="segment" as="div" href="#" onClick={() => this.onElementChanged(this.state.currentValue - PerPageSteps)}>
+        <Icon name="angle double up" /> Show {PerPageSteps} less
+      </Button>
+    )
   }
 }
 

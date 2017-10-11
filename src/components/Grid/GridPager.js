@@ -5,29 +5,34 @@ import Scroll from 'react-scroll';
 const scroll     = Scroll.animateScroll;
 
 class GridPager extends React.Component {
+
+    visiblePages = 5;
+
     constructor(props) {
         super(props);
- 
+
         this.handlePageChanged = this.handlePageChanged.bind(this);
 
         var perpage = this.props.perpage;
         var count = this.props.count;
         var divide = Math.ceil(count / perpage);
 
-        this.state = {
-          total: 0,
-          current: 0,
-          visiblePage: 5,
-        };
+       
 
         if(count <= perpage) {
+          this.state = {
+            disabled: true,
+          }  
+
+
           return ;
         }
 
         this.state = {
           total: divide,
-          current: 0,
-          visiblePage: 5,
+          disabled: false,
+          current: parseInt(props.current, 0),
+          visiblePage: this.visiblePages,
         };
     }
 
@@ -35,7 +40,7 @@ class GridPager extends React.Component {
       var perpage = nextProps.perpage;
       var count = nextProps.count;
       var divide = Math.ceil(count / perpage);
-          
+      
       this.setState(
         {
           total: divide,
@@ -47,17 +52,21 @@ class GridPager extends React.Component {
     
 
     handlePageChanged(newPage) {
+
+      if(newPage === this.state.current) {
+        return false;
+      }
+
       this.props.setPage(newPage);
-      
       scroll.scrollToTop();
-      this.setState(
-        { current : newPage }
-      );
+      
+      this.setState({ 
+        current : newPage 
+      });
     }
     
     render() {
-
-      if(this.state.total === 0) {
+      if(this.state.total === 0 || this.state.disabled) {
         return null;
       }
 

@@ -2,15 +2,12 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux';
+import { Label } from 'semantic-ui-react';
 
 import { gridAddSearchFacet } from '../../actions';
 
 class FacetLink extends Component {
   
-  constructor(props) {
-    super(props);
-  }
-
   clickTerm() {
     this.props.gridAddSearchFacet({
       type: this.props.type,
@@ -19,11 +16,16 @@ class FacetLink extends Component {
   }
 
   render() {
-      return(
-          <a onClick={() => this.clickTerm()}>
-              {this.props.label}
-          </a>
-      )
+    var label =this.props.label.split('|'); 
+    var full = label.join(' >> ');
+    var last = label[label.length - 1];
+    var full_label = `Category: ${full}`;
+    
+    return (
+        <Label as="a" onClick={() => this.clickTerm()} title={full_label} key={full}>
+          {last}
+        </Label>
+    )
   }
 }
   
