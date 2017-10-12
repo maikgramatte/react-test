@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import { Dropdown, Icon, Button, Segment } from 'semantic-ui-react'
 import PropTypes from 'prop-types';
-import pagerPerPageOptions, { PerPageMax, PerPageSteps } from './Options';
+import pagerPerPageOptions, { PerPageMax, PerPageSteps, PerPageLazyLoadEnabled } from './Options';
 import Scroll from 'react-scroll';
 
 const scroll  = Scroll.animateScroll;
@@ -21,7 +21,7 @@ export default class GridPerPage extends Component {
   }
 
   componentDidMount() {
-    if(this.props.page === 0 && this.state.value !== PerPageMax) {
+    if(PerPageLazyLoadEnabled && this.props.page === 0 && this.state.value !== PerPageMax) {
       setTimeout(() => {
         window.addEventListener('scroll', this.boundInfiniteScroll);
       }, 1000);   

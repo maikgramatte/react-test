@@ -11,6 +11,7 @@ export default {
     viewmode: 'default',
     sort: 'default',
     url: null,
+    facet_data: [],
     page: 0,
     perpage: 20,
     lazyload: false,

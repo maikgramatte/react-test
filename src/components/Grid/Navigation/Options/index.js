@@ -19,3 +19,4 @@ export default () => (
 export const PerPageDefault = 20;
 export const PerPageMax = 60;
 export const PerPageSteps = 20;
+export const PerPageLazyLoadEnabled = false;

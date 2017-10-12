@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Grid } from 'semantic-ui-react'
-import { Icon } from 'semantic-ui-react'
+import { Grid, Button } from 'semantic-ui-react'
 import ImgPreloader from '../Grid/ImageLoader';
-import TeaserData from './TeaserData';
+import TeaserData from './Snippets/TeaserData';
+import MediaType from './Snippets/MediaType';
 
 export default class Teaser extends Component {
 
@@ -15,54 +15,30 @@ export default class Teaser extends Component {
             width: '',
         };
     }
-    
-    hoverStyle = {
-        position: 'absolute',
-        width: '300px',
-        top: 0,
-        height: 400,
-        left: '-50px',
-        zIndex: 500,
-        background: 'White'
-    }
-
-    getIcon() {
-        if(this.props.item.format === 'Audio') {
-            return (
-                <Icon circular name='file audio outline' />
-            );            
-        }
-
-
-        if(this.props.item.format === 'Text') {
-            return (
-                <Icon circular name='file text outline' />
-            );            
-        }
-
-        return (
-            <Icon circular name='video' />
-        );        
-    }
 
     render() {
         var key = `k${this.props.item.id}`;
 
         return (
-            <Grid.Column className="column__grid" key={key} style={{width: this.state.width}}>
-                <div className="teaser" onMouseEnter={() => this.setState({hover: true }) } onMouseLeave={() => this.setState({hover: false}) }>
+            <Grid.Column className="column__grid" key={key}>
+                <div className="teaser">
                     <div className="teaser__image">
                         <ImgPreloader  alt={this.props.item.title} title={this.props.item.title} src={this.props.item.cover} />
-                        {this.getIcon()}
+                        <MediaType type={this.props.item.format} />
                     </div>
                     <div className="teaser__inner">
                         <TeaserData item={this.props.item} />
                     </div>
 
-                    {this.state.hover &&
-                        <div>Hover</div>
-                    }
-
+                    <div className="teaser__hover">
+                        <Button 
+                            as='a'
+                            fluid
+                            icon='play'
+                            color='red'
+                            content='View'
+                        ></Button>
+                    </div>
                 </div>
             </Grid.Column>
         );

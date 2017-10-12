@@ -19,12 +19,12 @@ class FacetLink extends Component {
     var label =this.props.label.split('|'); 
     var full = label.join(' >> ');
     var last = label[label.length - 1];
-    var full_label = `Category: ${full}`;
+    var full_label = `View all in Category: ${full}`;
     
     return (
-        <Label as="a" onClick={() => this.clickTerm()} title={full_label} key={full}>
-          {last}
-        </Label>
+      <Label as="a" onClick={() => this.clickTerm()} title={full_label} key={full}>
+        {last}
+      </Label>
     )
   }
 }

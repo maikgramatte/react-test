@@ -123,6 +123,7 @@ export const loadData = () => {
                     type:'GRID_UPDATE_STORE',
                     payload: {
                         results: result.items,
+                        facet_data: result.facets,
                         count: result.count,
                         lazyload: false,
                         loading: false,

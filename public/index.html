@@ -35,98 +35,9 @@
         text-align: left;
       }
 
-      .teaser {
-        border-radius: 10px;
-        box-shadow: 10px -2px 30px -4px rgba(0,0,0,0.4);
-        background: White;
-        border: 1px #eee solid;
-        overflow: hidden;
-        transition: all 0.2s cubic-bezier(0, 0, 0, 1.21);
-        min-width: 200px;
-        position: relative;
-        left: 0;
-        right: 0;
-      }
-
-      .column__grid:hover .teaser > div {
-        z-index: 101;
-        position: relative;
-      }
-
-      .column__grid:hover .teaser {
-        position: absolute;
-        left: -10px;
-        right: -10px;
-        top: 0px;
-        z-index: 100;
-        box-shadow: 0px 0px 5px 5px rgba(99, 92, 92, 0.4);
-      }
-
-      .teaser .teaser__inner {
-        padding:  1rem 1.5rem;
-        overflow: hidden;
-        position: relative;
-        padding-top: 2.5rem;
-      }
-
-      .teaser .teaser__inner:before {
-        content: '';
-        top: 1.5rem;
-        height: 3px;
-        width: 40px;
-        background: #ce2d2d;
-        position: absolute;
-        display: block;
-      }
-
-      .teaser img {
-        width: 100%;
-        display: block;
-      }
-
-      .teaser h3 {
-        margin: 0;
-        height: 50px;
-        overflow: hidden;
-        -webkit-line-clamp: 2;
-        display: -webkit-box;
-        -webkit-box-orient: vertical;
-        text-overflow: ellipsis;
-        font-weight: normal;
-      }
-
-      .teaser__image {
-        position: relative;
-        box-shadow: 10px 9px 30px -6px rgba(0,0,0,0.4);
-      }
-
-      .teaser__image i {
-        position: absolute;
-        bottom: -1rem;
-        right: 1rem;
-        font-size: 1.2rem;
-        background: white;
-      }
-
       .content-loader {
         height: 100px;
       }
-
-      menu.grid-view-switcher {
-        margin: .5rem 0;
-      }
-
-      menu.grid-view-switcher span {
-        transition: 0.4s;
-        color: #ccc;
-        cursor:pointer;
-        display: inline-block;
-      }
-
-      menu.grid-view-switcher span.active {
-        color: #888;
-      }
-
 
       .header-results {
         padding-bottom: 1rem;

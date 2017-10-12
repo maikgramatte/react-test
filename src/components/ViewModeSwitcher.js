@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Icon, Popup } from 'semantic-ui-react'
+import './css/view-switcher.css';
 
 export default class ViewModeSwitcher extends Component {
 

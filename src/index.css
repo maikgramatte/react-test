@@ -4,22 +4,3 @@ body {
   font-family: sans-serif;
 }
 
-.example-enter {
-  opacity: 0.01;
-}
-
-.example-enter.example-enter-active {
-  opacity: 1;
-  
-  transition: 700ms;
-}
-
-.example-leave {
-  opacity: 1;
- 
-}
-
-.example-leave.example-leave-active {
-  opacity: 0.01;
-  transition: 700ms;
-}

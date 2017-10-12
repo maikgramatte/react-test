@@ -1,0 +1,14 @@
+menu.grid-view-switcher {
+  margin: .5rem 0;
+}
+
+menu.grid-view-switcher span {
+  transition: 0.4s;
+  color: #ccc;
+  cursor:pointer;
+  display: inline-block;
+}
+
+menu.grid-view-switcher span.active {
+  color: #888;
+}

@@ -1,0 +1,45 @@
+.grid-item-listing {
+  padding: 0 !important;
+  background: White !important;
+  margin-bottom: 1rem !important;
+  border: 1px solid rgba(34,36,38,.15) !important;
+}
+
+.grid-item-listing .column:not(.brief):not(.abstract) {
+  padding: 0 !important;
+}
+
+.grid-item-listing .brief i {
+  position: absolute;
+  background: White;
+  right: 0;
+}
+
+.grid-item-listing .image img {
+  display: block;
+}
+
+.grid-item-listing .abstract th {
+  width: 20%;
+}
+
+.fade {
+  transition: all 0.4s ease-in-out;
+  max-height: 100px;
+  height: auto;
+}
+
+.fade.fade-entering {
+  max-height: 500px;
+  overflow: hidden;
+}
+
+.fade-entered {
+  max-height: none;
+}
+
+.fade.fade-exiting {
+  height: 20px !important;  
+  max-height: none;
+  overflow: hidden;
+}

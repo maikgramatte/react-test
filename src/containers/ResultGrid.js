@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux';
-import { Grid, Dimmer, Loader, Segment } from 'semantic-ui-react'
+import { Grid, Dimmer, Loader, Segment, Button, Transition } from 'semantic-ui-react'
 import * as actionCreators from "../actions/"
 
 import Teaser from '../components/Teasers/Teaser';
@@ -14,9 +14,21 @@ import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import GridPager from '../components/Grid/GridPager';
 import GridPerPage from '../components/Grid/Navigation/GridPerPage';
 import ErrorPage from '../components/SearchResult/Error';
+import FacetForm from '../components/Facets/FacetForm';
 
+import './css/grid.css';
 
 class ResultGrid extends Component {
+  
+    
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+        showFacets: true,
+    }
+  }  
 
   setViewMode(viewMode) {
     this.props.setViewMode(viewMode); 
@@ -140,7 +152,22 @@ class ResultGrid extends Component {
         )
     }
 
+    toggleFacet() {
+
+        var current = false;
+
+        if(!this.state.showFacets) {
+            current = true;    
+        }
+
+        this.setState({showFacets: current});
+    }
+
     render() {
+
+        var stateOptions = [];
+
+
         if(this.props.search.httpError) {
             return <ErrorPage type={this.props.search.httpError} />;
         }
@@ -154,6 +181,8 @@ class ResultGrid extends Component {
             </Segment>    
             );
         }
+
+        //stateOptions = this.props.search.facet_data.works_by_facet.items;
         
         return (
             <div>
@@ -175,7 +204,7 @@ class ResultGrid extends Component {
                 
                 <div className="ui stackable three column grid grid-max-width">
                     <div className="column">
-                        Show Filters
+                        <Button content='Show Filters' as="a" icon='caret down' basic labelPosition='right' onClick={() => this.toggleFacet() }/>
                     </div>    
                     <div className="column centered">
                         <ViewModeSwitcher 
@@ -190,6 +219,14 @@ class ResultGrid extends Component {
                         />
                     </div>   
                 </div>    
+
+                <Transition.Group animation="slide down" duration={400}>
+                {this.state.showFacets &&
+                    <Segment vertical className="grid-max-width">
+                        <FacetForm facets={this.props.search.facet_data} />
+                    </Segment>
+                }
+                </Transition.Group>
 
                 {this.renderResults()}
                 {this.renderBottomNavigation()}
